@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tienda de Accesorios</title>
+    <style>
+        .producto { border: 1px solid #ddd; padding: 15px; margin: 10px; }
+        #carrito { position: fixed; right: 20px; top: 20px; background: white; padding: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div id="carrito">
+        <h3>Carrito (0)</h3>
+        <div id="items-carrito"></div>
+        <button id="comprar-whatsapp" disabled>Comprar por WhatsApp</button>
+    </div>
+
+    <div class="producto" data-id="1" data-nombre="Anillo de Plata" data-precio="299">
+        <h2>Anillo de Plata</h2>
+        <p>$299</p>
+        <button class="agregar-carrito">Añadir al carrito</button>
+    </div>
+
+    <script>
+        // Carrito en memoria
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        
+        // Actualizar interfaz
+        function actualizarCarrito() {
+            document.getElementById('items-carrito').innerHTML = carrito
+                .map(item => `<div>${item.nombre} - $${item.precio}</div>`)
+                .join('');
+            
+            document.querySelector('#carrito h3').textContent = 
+                `Carrito (${carrito.length})`;
+                
+            document.getElementById('comprar-whatsapp').disabled = carrito.length === 0;
+        }
+        
+        // Añadir productos
+        document.querySelectorAll('.agregar-carrito').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const producto = btn.closest('.producto');
+                carrito.push({
+                    id: producto.dataset.id,
+                    nombre: producto.dataset.nombre,
+                    precio: Number(producto.dataset.precio)
+                });
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                actualizarCarrito();
+            });
+        });
+        
+        // Comprar por WhatsApp
+        document.getElementById('comprar-whatsapp').addEventListener('click', () => {
+            const items = carrito.map(item => 
+                `• ${item.nombre} (${item.id}) - $${item.precio}`
+            ).join('%0A');
+            
+            const total = carrito.reduce((sum, item) => sum + item.precio, 0);
+            const url = `https://wa.me/3002347692?text=Pedido:%0A${items}%0A%0ATotal: $${total}%0A%0AMi nombre: [NOMBRE]%0ADirección: [DIRECCIÓN]`;
+            
+            localStorage.removeItem('carrito'); // Limpiar carrito
+            window.location.href = url;
+        });
+        
+        // Inicializar
+        actualizarCarrito();
+    </script>
+</body>
+</html>
