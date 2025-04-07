@@ -57,7 +57,7 @@
             ).join('%0A');
             
             const total = carrito.reduce((sum, item) => sum + item.precio, 0);
-            const url = `https://wa.me/+57 3002347692?text=Pedido:%0A${items}%0A%0ATotal: $${total}%0A%0AMi nombre: [NOMBRE]%0ADirección: [DIRECCIÓN]`;
+            const url = `https://wa.me/+57 3044484305?text=Pedido:%0A${items}%0A%0ATotal: $${total}%0A%0AMi nombre: [NOMBRE]%0ADirección: [DIRECCIÓN]`;
             
             localStorage.removeItem('carrito'); // Limpiar carrito
             window.location.href = url;
